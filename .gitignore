@@ -1,0 +1,7 @@
+.secrets/
+.tools/
+.terraform/
+*.tfstate*
+*.tfplan
+*.auto.tfvars
+__pycache__/
