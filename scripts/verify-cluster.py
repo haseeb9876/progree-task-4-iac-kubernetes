@@ -10,7 +10,7 @@ MINIKUBE = shutil.which('minikube') or 'C:/Program Files/Kubernetes/Minikube/min
 PROFILE = 'progree-task4'
 
 def k(*args):
-    return subprocess.check_output([MINIKUBE, '-p', PROFILE, 'kubectl', '--', *args], text=True, encoding='utf-8')
+    return subprocess.check_output([MINIKUBE, '-p', PROFILE, 'kubectl', '--', '--context', PROFILE, *args], text=True, encoding='utf-8')
 
 def data(*args):
     return json.loads(k(*args, '-o', 'json'))

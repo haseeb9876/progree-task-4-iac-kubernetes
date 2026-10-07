@@ -1,0 +1,10 @@
+{
+  "recorded_at_utc": "2026-10-07T04:58:14.611541+00:00",
+  "terraform_version": "1.16.5",
+  "provider": "hashicorp/aws 6.67.0",
+  "validate": "passed",
+  "mock_tests_passed": 2,
+  "mock_tests_failed": 0,
+  "cloud_resources_created": false,
+  "scope": "Credential-free provider mocks; not a real cloud plan or apply."
+}

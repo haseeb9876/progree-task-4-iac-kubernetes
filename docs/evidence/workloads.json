@@ -1,0 +1,90 @@
+{
+  "captured_at_utc": "2026-10-07T17:15:35.732353+00:00",
+  "pods": [
+    {
+      "name": "backend-795fbb7f8d-l5l27",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "backend",
+          "image": "docker.io/library/progree-task4-backend:local",
+          "imageID": "sha256:4503eac93fd791892ea5482280127a42d298a199f78596051595b680a9e112d6"
+        }
+      ]
+    },
+    {
+      "name": "backend-795fbb7f8d-tcr8c",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "backend",
+          "image": "docker.io/library/progree-task4-backend:local",
+          "imageID": "sha256:4503eac93fd791892ea5482280127a42d298a199f78596051595b680a9e112d6"
+        }
+      ]
+    },
+    {
+      "name": "frontend-57c79f7c89-p5kvh",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "frontend",
+          "image": "docker.io/library/progree-task4-frontend:local",
+          "imageID": "sha256:f5dfb514a2b15ef16f7d0eb51610bdc1044bb88a647cefec0086193a3a711e24"
+        }
+      ]
+    },
+    {
+      "name": "frontend-57c79f7c89-wfgcl",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "frontend",
+          "image": "docker.io/library/progree-task4-frontend:local",
+          "imageID": "sha256:f5dfb514a2b15ef16f7d0eb51610bdc1044bb88a647cefec0086193a3a711e24"
+        }
+      ]
+    },
+    {
+      "name": "mongodb-0",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "mongodb",
+          "image": "docker.io/library/progree-task4-mongodb:local",
+          "imageID": "docker.io/library/mongo@sha256:5d7043a4ffe02b9ed1b6e0bab057546981af5ca0a79107e9c461e49bc44c0a7b"
+        }
+      ]
+    },
+    {
+      "name": "redis-54ff48ff5f-vhdbl",
+      "node": "progree-task4",
+      "ready": true,
+      "images": [
+        {
+          "name": "redis",
+          "image": "docker.io/library/progree-task4-redis:local",
+          "imageID": "docker.io/library/redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+        }
+      ]
+    }
+  ],
+  "pvc": [
+    {
+      "name": "data-mongodb-0",
+      "status": "Bound",
+      "volume": "pvc-3c4696b5-82a1-4382-88f9-4fb10d3017ca"
+    }
+  ],
+  "ingress": [
+    {
+      "name": "wanderlust",
+      "class": "traefik"
+    }
+  ]
+}

@@ -1,25 +1,18 @@
-# Task 4 implementation checklist
+# Task 4 requirement checklist
 
 Source: Progree DevOps Tasks & Instructions PDF, Task 4.
 Selected execution environment: local Minikube, as requested.
 
-| Requirement | Implementation target | Evidence required |
+| PDF requirement | Implementation | Verification |
 | --- | --- | --- |
-| Isolated networks declared with IaC | Terraform cloud network configuration; provider still to be selected | Formatting/validation plus real plan/apply only when cloud use is authorized |
-| Containerized application on Kubernetes | Standalone Wanderlust frontend/backend, MongoDB, Redis | Ready pods and passing API checks |
-| Persistent volume claims | MongoDB StatefulSet with PVC | Record survives pod replacement |
-| Ingress endpoint | Traefik routing to frontend/backend services | Actual browser/API request through Ingress |
-| HPA | CPU requests, metrics-server, autoscaling/v2 HPA | Measured replicas increase under load and settle after load stops |
-| Availability | Multiple stateless replicas, probes, disruption budgets | Recovery after deleting an application pod |
-| Highly available cluster | Architecture documented separately from laptop demo | Single laptop cannot verify control-plane or node failure tolerance |
+| Declarative cloud networks | Optional AWS Terraform VPC, four subnets across two zones, separate routes | Validate and provider-mock tests; no real cloud apply |
+| Containerized stack on Kubernetes | Standalone frontend/backend, MongoDB, Redis | Ready pods and actual API checks |
+| Persistent volume claims | MongoDB StatefulSet with 1 GiB PVC | Temporary post survives pod replacement with same PVC |
+| Ingress endpoints | Traefik, localhost:8084 forwarding | Browser routes and API exercised through Ingress |
+| HPA | Backend CPU requests and autoscaling/v2, 2 to 4 replicas | Ready replicas increase under real HTTP load and return to two |
+| Elastic, highly available environment | Stateless replicas, probes, rolling updates, disruption budgets | Pod recovery and elasticity only; single-node/database failure tolerance is not provided |
 
-## Delivery stages
-
-1. Install and verify Minikube prerequisites; record cluster evidence.
-2. Add standalone application sources with attribution and Kubernetes manifests.
-3. Deploy, run persistence/recovery/Ingress/HPA checks, record real outcomes.
-4. Add declarative infrastructure appropriate to the selected cloud provider.
-5. Produce the final PDF and presentation instructions from recorded evidence.
-
-The setup repository is not a claim that all Task 4 requirements are complete.
+[Recorded evidence](evidence/README.md) documents completed executions. The local
+orchestration deliverable is separate from the remaining live cloud and full HA
+objective. No cloud account, region or spending authorization was provided.
 Tasks 2 and 3 remain independent projects with separate data and ports.

@@ -1,0 +1,6 @@
+tests\network.tftest.hcl... in progress
+  run "isolated_network_layout"... pass
+  run "reject_duplicate_zones"... pass
+tests\network.tftest.hcl... tearing down
+tests\network.tftest.hcl... pass
+Success! 2 passed, 0 failed.

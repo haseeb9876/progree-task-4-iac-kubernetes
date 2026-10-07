@@ -1,0 +1,40 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "runtime-config",
+        "namespace": "progree-task4"
+      },
+      "data": {
+        "NODE_ENV": "production",
+        "PORT": "5000",
+        "MONGO_HOST": "mongodb",
+        "MONGO_DATABASE": "wanderlust",
+        "MONGO_USER": "wanderlust",
+        "MONGO_PASSWORD_FILE": "/run/secrets/mongo_app_password",
+        "REDIS_URL": "redis://redis:6379",
+        "REDIS_PASSWORD_FILE": "/run/secrets/redis_password",
+        "JWT_SECRET_FILE": "/run/secrets/jwt_secret",
+        "COOKIE_SECURE": "false",
+        "ACCESS_TOKEN_EXPIRES_IN": "15m",
+        "REFRESH_TOKEN_EXPIRES_IN": "7d"
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "ConfigMap",
+      "metadata": {
+        "name": "database-init",
+        "namespace": "progree-task4"
+      },
+      "data": {
+        "init.js": "// Runs once, when MongoDB's data volume is empty.\nconst fs = require('fs');\nconst appDb = db.getSiblingDB('wanderlust');\nappDb.createUser({\n  user: 'wanderlust',\n  pwd: fs.readFileSync('/run/secrets/mongo_app_password', 'utf8').trim(),\n  roles: [{ role: 'readWrite', db: 'wanderlust' }],\n});\n",
+        "start-redis.sh": "#!/bin/sh\nset -eu\numask 077\n# Keep the password out of process arguments.\nprintf 'bind 0.0.0.0\\nprotected-mode yes\\nport 6379\\nsave \"\"\\nappendonly no\\nrequirepass %s\\n' \\\n  \"$(cat /run/secrets/redis_password)\" > /tmp/redis.conf\nexec redis-server /tmp/redis.conf\n"
+      }
+    }
+  ]
+}

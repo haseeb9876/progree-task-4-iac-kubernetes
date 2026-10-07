@@ -1,0 +1,28 @@
+pod "mongodb-0" deleted from progree-task4 namespace
+Waiting for 1 pods to be ready...
+partitioned roll out complete: 1 new pods have been updated...
+pod "backend-795fbb7f8d-hkz8b" deleted from progree-task4 namespace
+Waiting for deployment "backend" rollout to finish: 1 of 2 updated replicas are available...
+Waiting for deployment spec update to be observed...
+Waiting for deployment "backend" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 2 out of 3 new replicas have been updated...
+Waiting for deployment "backend" rollout to finish: 1 of 3 updated replicas are available...
+Waiting for deployment "backend" rollout to finish: 2 of 3 updated replicas are available...
+deployment "backend" successfully rolled out
+{
+  "verified_at_utc": "2026-10-07T10:25:08.665757+00:00",
+  "pvc_uid": "3c4696b5-82a1-4382-88f9-4fb10d3017ca",
+  "volume_name": "pvc-3c4696b5-82a1-4382-88f9-4fb10d3017ca",
+  "persistence": {
+    "result": "passed",
+    "old_pod_uid": "2f1ca912-399c-4d83-9af3-c30dc1ecf5b4",
+    "new_pod_uid": "514e312a-1b73-4115-97de-3a1e2952ba19",
+    "same_pvc": true
+  },
+  "pod_recovery": {
+    "result": "passed",
+    "deleted_pod": "backend-795fbb7f8d-hkz8b",
+    "ready_replicas": 3
+  },
+  "limitations": "Pod replacement tested, not uninterrupted availability, node loss, database replication, or cloud HA."
+}

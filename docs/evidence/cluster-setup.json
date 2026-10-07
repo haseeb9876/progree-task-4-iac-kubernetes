@@ -1,0 +1,18 @@
+{
+  "verified_at_utc": "2026-10-07T10:24:49.578221+00:00",
+  "profile": "progree-task4",
+  "nodes": [
+    {
+      "name": "progree-task4",
+      "version": "v1.37.0",
+      "ready": true
+    }
+  ],
+  "default_storage_class": [
+    "standard"
+  ],
+  "metrics_api_available": true,
+  "traefik_ready": true,
+  "node_metrics": "NAME            CPU(cores)   CPU(%)   MEMORY(bytes)   MEMORY(%)   \nprogree-task4   750m         18%      1778Mi          22%",
+  "scope": "Cluster prerequisites only; not application, HPA scaling, persistence, cloud, or high-availability proof."
+}

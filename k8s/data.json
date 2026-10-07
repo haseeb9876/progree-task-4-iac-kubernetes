@@ -1,0 +1,328 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "StatefulSet",
+      "metadata": {
+        "name": "mongodb",
+        "namespace": "progree-task4"
+      },
+      "spec": {
+        "serviceName": "mongodb",
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "mongodb"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "mongodb"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "name": "mongodb",
+                "image": "docker.io/library/mongo@sha256:5d7043a4ffe02b9ed1b6e0bab057546981af5ca0a79107e9c461e49bc44c0a7b",
+                "ports": [
+                  {
+                    "containerPort": 27017
+                  }
+                ],
+                "args": [
+                  "--wiredTigerCacheSizeGB",
+                  "0.25"
+                ],
+                "env": [
+                  {
+                    "name": "MONGO_INITDB_ROOT_USERNAME",
+                    "value": "admin"
+                  },
+                  {
+                    "name": "MONGO_INITDB_ROOT_PASSWORD_FILE",
+                    "value": "/run/secrets/mongo_root_password"
+                  },
+                  {
+                    "name": "MONGO_INITDB_DATABASE",
+                    "value": "wanderlust"
+                  }
+                ],
+                "resources": {
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "256Mi"
+                  },
+                  "limits": {
+                    "cpu": "700m",
+                    "memory": "768Mi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "data",
+                    "mountPath": "/data/db"
+                  },
+                  {
+                    "name": "configdb",
+                    "mountPath": "/data/configdb"
+                  },
+                  {
+                    "name": "secrets",
+                    "mountPath": "/run/secrets",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "init",
+                    "mountPath": "/docker-entrypoint-initdb.d",
+                    "readOnly": true
+                  }
+                ],
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "mongosh",
+                      "--quiet",
+                      "--eval",
+                      "quit(db.adminCommand('ping').ok ? 0 : 1)"
+                    ]
+                  },
+                  "periodSeconds": 30,
+                  "timeoutSeconds": 15
+                },
+                "startupProbe": {
+                  "tcpSocket": {
+                    "port": 27017
+                  },
+                  "periodSeconds": 5,
+                  "failureThreshold": 60,
+                  "timeoutSeconds": 3
+                },
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "volumes": [
+              {
+                "name": "secrets",
+                "secret": {
+                  "secretName": "runtime-secrets",
+                  "defaultMode": 292,
+                  "items": [
+                    {
+                      "key": "mongo_root_password",
+                      "path": "mongo_root_password"
+                    },
+                    {
+                      "key": "mongo_app_password",
+                      "path": "mongo_app_password"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "configdb",
+                "emptyDir": {}
+              },
+              {
+                "name": "init",
+                "configMap": {
+                  "name": "database-init",
+                  "items": [
+                    {
+                      "key": "init.js",
+                      "path": "01-app-user.js"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "volumeClaimTemplates": [
+          {
+            "metadata": {
+              "name": "data"
+            },
+            "spec": {
+              "accessModes": [
+                "ReadWriteOnce"
+              ],
+              "resources": {
+                "requests": {
+                  "storage": "1Gi"
+                }
+              },
+              "storageClassName": "standard"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "mongodb",
+        "namespace": "progree-task4"
+      },
+      "spec": {
+        "selector": {
+          "app": "mongodb"
+        },
+        "ports": [
+          {
+            "name": "tcp",
+            "port": 27017,
+            "targetPort": 27017
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {
+        "name": "redis",
+        "namespace": "progree-task4"
+      },
+      "spec": {
+        "replicas": 1,
+        "selector": {
+          "matchLabels": {
+            "app": "redis"
+          }
+        },
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "redis"
+            }
+          },
+          "spec": {
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "name": "redis",
+                "image": "docker.io/library/redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+                "command": [
+                  "sh",
+                  "/config/start-redis.sh"
+                ],
+                "ports": [
+                  {
+                    "containerPort": 6379
+                  }
+                ],
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "readOnlyRootFilesystem": true,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  },
+                  "runAsNonRoot": true,
+                  "runAsUser": 999,
+                  "runAsGroup": 1000
+                },
+                "resources": {
+                  "requests": {
+                    "cpu": "25m",
+                    "memory": "32Mi"
+                  },
+                  "limits": {
+                    "cpu": "250m",
+                    "memory": "128Mi"
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "name": "tmp",
+                    "mountPath": "/tmp"
+                  },
+                  {
+                    "name": "secrets",
+                    "mountPath": "/run/secrets",
+                    "readOnly": true
+                  },
+                  {
+                    "name": "config",
+                    "mountPath": "/config",
+                    "readOnly": true
+                  }
+                ],
+                "readinessProbe": {
+                  "exec": {
+                    "command": [
+                      "sh",
+                      "-c",
+                      "REDISCLI_AUTH=\"$(cat /run/secrets/redis_password)\" redis-cli ping | grep -qx PONG"
+                    ]
+                  },
+                  "periodSeconds": 5,
+                  "timeoutSeconds": 5
+                },
+                "imagePullPolicy": "IfNotPresent"
+              }
+            ],
+            "volumes": [
+              {
+                "name": "tmp",
+                "emptyDir": {}
+              },
+              {
+                "name": "secrets",
+                "secret": {
+                  "secretName": "runtime-secrets",
+                  "defaultMode": 292,
+                  "items": [
+                    {
+                      "key": "redis_password",
+                      "path": "redis_password"
+                    }
+                  ]
+                }
+              },
+              {
+                "name": "config",
+                "configMap": {
+                  "name": "database-init",
+                  "items": [
+                    {
+                      "key": "start-redis.sh",
+                      "path": "start-redis.sh"
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      }
+    },
+    {
+      "apiVersion": "v1",
+      "kind": "Service",
+      "metadata": {
+        "name": "redis",
+        "namespace": "progree-task4"
+      },
+      "spec": {
+        "selector": {
+          "app": "redis"
+        },
+        "ports": [
+          {
+            "name": "tcp",
+            "port": 6379,
+            "targetPort": 6379
+          }
+        ]
+      }
+    }
+  ]
+}
